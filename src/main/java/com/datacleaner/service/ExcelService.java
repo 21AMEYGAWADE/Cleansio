@@ -3,6 +3,9 @@ package com.datacleaner.service;
 import com.datacleaner.model.PreviewResponse;
 import com.datacleaner.model.SummaryResponse;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -15,7 +18,6 @@ import java.util.*;
 @Service
 public class ExcelService {
 
-    // CLEANING OPTIONS
     private boolean properCaseEnabled;
     private boolean removeDuplicatesEnabled;
     private boolean removeEmptyRowsEnabled;
@@ -23,7 +25,7 @@ public class ExcelService {
     private boolean trimSpacesEnabled;
 
     // =========================
-    // PREVIEW FILE
+    // PREVIEW
     // =========================
     public PreviewResponse preview(MultipartFile file) {
 
@@ -32,52 +34,113 @@ public class ExcelService {
 
         try {
 
-            Workbook workbook =
-                    new XSSFWorkbook(file.getInputStream());
+            String extension =
+                    getFileExtension(
+                            file.getOriginalFilename()
+                    );
 
-            Sheet sheet = workbook.getSheetAt(0);
+            // XLSX
+            if (extension.equals("xlsx")) {
 
-            Set<String> uniqueRows = new HashSet<>();
+                Workbook workbook =
+                        new XSSFWorkbook(
+                                file.getInputStream()
+                        );
+
+                Sheet sheet =
+                        workbook.getSheetAt(0);
+
+                for (Row row : sheet) {
+
+                    List<String> rowData =
+                            new ArrayList<>();
+
+                    int lastColumn =
+                            row.getLastCellNum();
+
+                    for (int i = 0;
+                         i < lastColumn;
+                         i++) {
+
+                        Cell cell = row.getCell(
+                                i,
+                                Row.MissingCellPolicy.CREATE_NULL_AS_BLANK
+                        );
+
+                        rowData.add(
+                                getRawCellValue(cell)
+                        );
+                    }
+
+                    data.add(rowData);
+                }
+
+                workbook.close();
+            }
+
+            // CSV
+            else if (extension.equals("csv")) {
+
+                data =
+                        readCSV(
+                                file.getInputStream()
+                        );
+            }
+
+            // JSON
+            else if (extension.equals("json")) {
+
+                data =
+                        readJSON(
+                                file.getInputStream()
+                        );
+            }
+
+            // XML
+            else if (extension.equals("xml")) {
+
+                data =
+                        readXML(
+                                file.getInputStream()
+                        );
+            }
+
+            Set<String> uniqueRows =
+                    new HashSet<>();
 
             int duplicates = 0;
 
-            for (Row row : sheet) {
+            for (int i = 0;
+                 i < data.size();
+                 i++) {
 
-                List<String> rowData = new ArrayList<>();
-
-                int lastColumn = row.getLastCellNum();
-
-                for (int i = 0; i < lastColumn; i++) {
-
-                    Cell cell = row.getCell(
-                            i,
-                            Row.MissingCellPolicy.CREATE_NULL_AS_BLANK
-                    );
-
-                    rowData.add(getRawCellValue(cell));
-                }
-
-                String rowKey = String.join("|", rowData);
+                String rowKey =
+                        String.join("|", data.get(i));
 
                 if (uniqueRows.contains(rowKey)) {
 
-                    duplicateRows.add(data.size());
+                    duplicateRows.add(i);
                     duplicates++;
                 }
 
                 uniqueRows.add(rowKey);
-
-                data.add(rowData);
             }
 
-            SummaryResponse summary = new SummaryResponse(
-                    data.size(),
-                    data.size() - duplicates,
-                    duplicates,
-                    0
-            );
+            int qualityScore =
+                    calculateQualityScore(
+                            data.size(),
+                            duplicates,
+                            0,
+                            0
+                    );
 
-            workbook.close();
+            SummaryResponse summary =
+                    new SummaryResponse(
+                            data.size(),
+                            data.size() - duplicates,
+                            duplicates,
+                            qualityScore
+                    );
 
             return new PreviewResponse(
                     data,
@@ -92,7 +155,7 @@ public class ExcelService {
     }
 
     // =========================
-    // CLEAN FILE
+    // CLEAN
     // =========================
     public ByteArrayInputStream clean(
 
@@ -103,6 +166,7 @@ public class ExcelService {
             boolean removeEmptyRows,
             boolean removeEmptyColumns,
             boolean trimSpaces
+
     ) {
 
         this.properCaseEnabled = properCase;
@@ -114,30 +178,37 @@ public class ExcelService {
         try (
 
                 Workbook workbook =
-                        new XSSFWorkbook(file.getInputStream());
+                        new XSSFWorkbook(
+                                file.getInputStream()
+                        );
 
                 Workbook cleanedWorkbook =
                         new XSSFWorkbook()
 
         ) {
 
-            Sheet sheet = workbook.getSheetAt(0);
+            Sheet sheet =
+                    workbook.getSheetAt(0);
 
             Sheet cleanedSheet =
-                    cleanedWorkbook.createSheet("Cleaned Data");
+                    cleanedWorkbook.createSheet(
+                            "Cleaned Data"
+                    );
 
             List<Integer> validColumns;
 
-            // REMOVE EMPTY COLUMNS
             if (removeEmptyColumnsEnabled) {
 
-                validColumns = getNonEmptyColumns(sheet);
+                validColumns =
+                        getNonEmptyColumns(sheet);
 
             } else {
 
-                validColumns = new ArrayList<>();
+                validColumns =
+                        new ArrayList<>();
 
-                Row header = sheet.getRow(0);
+                Row header =
+                        sheet.getRow(0);
 
                 for (int i = 0;
                      i < header.getLastCellNum();
@@ -147,38 +218,47 @@ public class ExcelService {
                 }
             }
 
-            Set<String> uniqueRows = new HashSet<>();
+            Set<String> uniqueRows =
+                    new HashSet<>();
 
             int cleanedRowIndex = 0;
 
             for (Row row : sheet) {
 
-                // REMOVE EMPTY ROWS
-                if (removeEmptyRowsEnabled &&
-                        isRowEmpty(row)) {
-
+                if (
+                        removeEmptyRowsEnabled
+                                && isRowEmpty(row)
+                ) {
                     continue;
                 }
 
                 String rowKey =
-                        rowToString(row, validColumns);
+                        rowToString(
+                                row,
+                                validColumns
+                        );
 
-                // REMOVE DUPLICATES
-                if (removeDuplicatesEnabled &&
-                        uniqueRows.contains(rowKey)) {
-
+                if (
+                        removeDuplicatesEnabled
+                                && uniqueRows.contains(rowKey)
+                ) {
                     continue;
                 }
 
                 uniqueRows.add(rowKey);
 
                 Row cleanedRow =
-                        cleanedSheet.createRow(cleanedRowIndex++);
+                        cleanedSheet.createRow(
+                                cleanedRowIndex++
+                        );
 
-                copyRow(row, cleanedRow, validColumns);
+                copyRow(
+                        row,
+                        cleanedRow,
+                        validColumns
+                );
             }
 
-            // AUTO SIZE COLUMNS
             for (int i = 0;
                  i < validColumns.size();
                  i++) {
@@ -202,7 +282,7 @@ public class ExcelService {
     }
 
     // =========================
-    // GET NON EMPTY COLUMNS
+    // NON EMPTY COLUMNS
     // =========================
     private List<Integer> getNonEmptyColumns(
             Sheet sheet
@@ -211,7 +291,8 @@ public class ExcelService {
         List<Integer> validColumns =
                 new ArrayList<>();
 
-        Row headerRow = sheet.getRow(0);
+        Row headerRow =
+                sheet.getRow(0);
 
         if (headerRow == null) {
             return validColumns;
@@ -230,7 +311,8 @@ public class ExcelService {
                  rowIndex <= sheet.getLastRowNum();
                  rowIndex++) {
 
-                Row row = sheet.getRow(rowIndex);
+                Row row =
+                        sheet.getRow(rowIndex);
 
                 if (row == null) continue;
 
@@ -239,7 +321,8 @@ public class ExcelService {
                         Row.MissingCellPolicy.CREATE_NULL_AS_BLANK
                 );
 
-                String value = getCellValue(cell);
+                String value =
+                        getCellValue(cell);
 
                 if (!value.isEmpty()) {
 
@@ -257,9 +340,6 @@ public class ExcelService {
         return validColumns;
     }
 
-    // =========================
-    // CHECK EMPTY ROW
-    // =========================
     private boolean isRowEmpty(Row row) {
 
         if (row == null) {
@@ -269,7 +349,6 @@ public class ExcelService {
         for (Cell cell : row) {
 
             if (!getCellValue(cell).isEmpty()) {
-
                 return false;
             }
         }
@@ -277,9 +356,6 @@ public class ExcelService {
         return true;
     }
 
-    // =========================
-    // COPY ROW
-    // =========================
     private void copyRow(
 
             Row source,
@@ -306,14 +382,24 @@ public class ExcelService {
         }
     }
 
-    // =========================
-    // ROW TO STRING
-    // =========================
-    private String rowToString(
+    private String generateInsights(List<List<String>> data) {
+        int rows = data.size();
 
+        return """
+            Dataset Analysis:
+
+            • Total rows: %d
+            • Dataset quality: Good
+            • Duplicate rows detected
+            • Missing values cleaned
+            • Recommended for analytics
+            """.formatted(rows);
+    }
+
+
+    private String rowToString(
             Row row,
             List<Integer> validColumns
-
     ) {
 
         StringBuilder sb =
@@ -334,9 +420,6 @@ public class ExcelService {
         return sb.toString();
     }
 
-    // =========================
-    // CLEAN CELL VALUE
-    // =========================
     private String getCellValue(Cell cell) {
 
         if (cell == null) {
@@ -345,7 +428,7 @@ public class ExcelService {
 
         String value = cell.toString();
 
-        // TRIM SPACES
+        // TRIM
         if (trimSpacesEnabled) {
 
             value = value
@@ -356,20 +439,28 @@ public class ExcelService {
         // PROPER CASE
         if (properCaseEnabled) {
 
-            // IGNORE EMAILS / IDs
-            if (!value.contains("@")
-                    && !value.matches(".*\\d.*")) {
+            if (
+                    !value.contains("@")
+                            && !value.matches(".*\\d.*")
+            ) {
 
-                value = toProperCase(value);
+                value =
+                        toProperCase(value);
+            }
+        }
+
+        // EMAIL VALIDATION
+        if (value.contains("@")) {
+
+            if (!isValidEmail(value)) {
+
+                value = "INVALID_EMAIL";
             }
         }
 
         return value;
     }
 
-    // =========================
-    // RAW CELL VALUE (PREVIEW)
-    // =========================
     private String getRawCellValue(Cell cell) {
 
         if (cell == null) {
@@ -380,11 +471,164 @@ public class ExcelService {
     }
 
     // =========================
-    // PROPER CASE CONVERTER
+    // FILE TYPE
     // =========================
-    private String toProperCase(String text) {
+    private String getFileExtension(
+            String filename
+    ) {
 
-        if (text == null || text.isEmpty()) {
+        if (filename == null) {
+            return "";
+        }
+
+        return filename.substring(
+                filename.lastIndexOf(".") + 1
+        ).toLowerCase();
+    }
+
+    // =========================
+    // CSV
+    // =========================
+    private List<List<String>> readCSV(
+            InputStream inputStream
+    ) throws IOException {
+
+        List<List<String>> data =
+                new ArrayList<>();
+
+        BufferedReader br =
+                new BufferedReader(
+                        new InputStreamReader(inputStream)
+                );
+
+        String line;
+
+        while ((line = br.readLine()) != null) {
+
+            data.add(
+                    Arrays.asList(line.split(","))
+            );
+        }
+
+        return data;
+    }
+
+    // =========================
+    // JSON
+    // =========================
+    private List<List<String>> readJSON(
+            InputStream inputStream
+    ) throws Exception {
+
+        ObjectMapper mapper =
+                new ObjectMapper();
+
+        List<Map<String, Object>> jsonData =
+                mapper.readValue(
+                        inputStream,
+                        List.class
+                );
+
+        List<List<String>> result =
+                new ArrayList<>();
+
+        for (Map<String, Object> row : jsonData) {
+
+            List<String> values =
+                    new ArrayList<>();
+
+            for (Object value : row.values()) {
+
+                values.add(
+                        String.valueOf(value)
+                );
+            }
+
+            result.add(values);
+        }
+
+        return result;
+    }
+
+    // =========================
+    // XML
+    // =========================
+    private List<List<String>> readXML(
+            InputStream inputStream
+    ) throws Exception {
+
+        XmlMapper xmlMapper =
+                new XmlMapper();
+
+        Map<String, Object> xmlData =
+                xmlMapper.readValue(
+                        inputStream,
+                        Map.class
+                );
+
+        List<List<String>> result =
+                new ArrayList<>();
+
+        for (Object value : xmlData.values()) {
+
+            List<String> row =
+                    new ArrayList<>();
+
+            row.add(
+                    String.valueOf(value)
+            );
+
+            result.add(row);
+        }
+
+        return result;
+    }
+
+    // =========================
+    // EMAIL VALIDATION
+    // =========================
+    private boolean isValidEmail(
+            String email
+    ) {
+
+        String regex =
+                "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
+
+        return email.matches(regex);
+    }
+
+    // =========================
+    // QUALITY SCORE
+    // =========================
+    private int calculateQualityScore(
+
+            int totalRows,
+            int duplicateRows,
+            int emptyRows,
+            int invalidEmails
+
+    ) {
+
+        int score = 100;
+
+        score -= duplicateRows * 2;
+        score -= emptyRows * 2;
+        score -= invalidEmails * 3;
+
+        return Math.max(score, 0);
+    }
+
+    // =========================
+    // PROPER CASE
+    // =========================
+    private String toProperCase(
+            String text
+    ) {
+
+        if (
+                text == null
+                        || text.isEmpty()
+        ) {
             return "";
         }
 

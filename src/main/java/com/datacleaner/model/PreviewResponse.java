@@ -8,10 +8,14 @@ public class PreviewResponse {
     private List<Integer> duplicateRows;
     private SummaryResponse summary;
 
-    public PreviewResponse(List<List<String>> data,
-                           List<Integer> duplicateRows,
-                           SummaryResponse summary) {
+    public PreviewResponse() {
+    }
 
+    public PreviewResponse(
+            List<List<String>> data,
+            List<Integer> duplicateRows,
+            SummaryResponse summary
+    ) {
         this.data = data;
         this.duplicateRows = duplicateRows;
         this.summary = summary;
@@ -21,11 +25,23 @@ public class PreviewResponse {
         return data;
     }
 
+    public void setData(List<List<String>> data) {
+        this.data = data;
+    }
+
     public List<Integer> getDuplicateRows() {
         return duplicateRows;
     }
 
+    public void setDuplicateRows(List<Integer> duplicateRows) {
+        this.duplicateRows = duplicateRows;
+    }
+
     public SummaryResponse getSummary() {
         return summary;
+    }
+
+    public void setSummary(SummaryResponse summary) {
+        this.summary = summary;
     }
 }

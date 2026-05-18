@@ -1,8 +1,11 @@
+<!-- src/main/resources/templates/index.html -->
+
 <!DOCTYPE html>
 <html>
 <head>
     <title>Data Cleaner Pro</title>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -14,19 +17,53 @@
 <!-- NAVBAR -->
 <nav class="bg-blue-700 text-white shadow-lg">
     <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-        <h1 class="text-2xl font-bold">Data Cleaner Pro</h1>
 
-        <div class="space-x-6 hidden md:flex">
-            <a href="#features" class="hover:text-yellow-300">Features</a>
-            <a href="#upload" class="hover:text-yellow-300">Upload</a>
-            <a href="#analytics" class="hover:text-yellow-300">Analytics</a>
-            <a href="#summary" class="hover:text-yellow-300">Summary</a>
+        <h1 class="text-2xl font-bold">
+            Data Cleaner Pro
+        </h1>
+
+        <div class="space-x-6 hidden md:flex items-center">
+            <a href="#features" class="hover:text-yellow-300">
+                Features
+            </a>
+
+            <a href="#upload" class="hover:text-yellow-300">
+                Upload
+            </a>
+
+            <a href="#analytics" class="hover:text-yellow-300">
+                Analytics
+            </a>
+
+            <a href="#assistant" class="hover:text-yellow-300">
+                AI Assistant
+            </a>
+
+            <!-- USER -->
+            <span class="font-semibold text-yellow-300"
+                th:if="${#authentication != null}"
+                th:text="${#authentication.name}">
+            </span>
+
+            <!-- HISTORY -->
+            <a href="/history"
+            class="bg-white text-blue-700 px-4 py-2 rounded-lg font-semibold hover:bg-gray-200">
+                History
+            </a>
+
+            <!-- LOGOUT -->
+            <a href="/logout"
+            class="bg-red-500 px-4 py-2 rounded-lg hover:bg-red-600">
+                Logout
+            </a>
+
         </div>
     </div>
 </nav>
 
-<!-- HERO SECTION -->
+<!-- HERO -->
 <section class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-20">
+
     <div class="max-w-6xl mx-auto px-6 text-center">
 
         <h1 class="text-5xl font-extrabold mb-6">
@@ -34,24 +71,20 @@
         </h1>
 
         <p class="text-xl mb-8 text-gray-200">
-            Upload, analyze, clean and visualize your datasets instantly.
+            Upload, clean, analyze and visualize datasets instantly.
         </p>
 
-        <div class="flex justify-center gap-4 flex-wrap">
-            <button onclick="scrollToUpload()"
-                    class="bg-white text-blue-700 px-8 py-3 rounded-xl font-semibold hover:bg-gray-200 transition">
-                Start Cleaning
-            </button>
+        <button onclick="scrollToUpload()"
+                class="bg-white text-blue-700 px-8 py-3 rounded-xl font-semibold hover:bg-gray-200 transition">
+            Start Cleaning
+        </button>
 
-            <button class="border border-white px-8 py-3 rounded-xl hover:bg-white hover:text-blue-700 transition">
-                Learn More
-            </button>
-        </div>
     </div>
 </section>
 
 <!-- FEATURES -->
 <section id="features" class="py-16 bg-white">
+
     <div class="max-w-6xl mx-auto px-6">
 
         <h2 class="text-4xl font-bold text-center mb-12">
@@ -60,7 +93,8 @@
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
 
-            <div class="bg-gray-50 p-6 rounded-2xl shadow hover:shadow-xl transition">
+            <div class="bg-gray-50 p-6 rounded-2xl shadow">
+
                 <h3 class="text-2xl font-bold mb-4 text-blue-600">
                     Smart Cleaning
                 </h3>
@@ -69,11 +103,13 @@
                     <li>✔ Remove duplicate rows</li>
                     <li>✔ Remove empty columns</li>
                     <li>✔ Remove empty rows</li>
-                    <li>✔ Trim extra spaces</li>
+                    <li>✔ Proper case conversion</li>
                 </ul>
+
             </div>
 
-            <div class="bg-gray-50 p-6 rounded-2xl shadow hover:shadow-xl transition">
+            <div class="bg-gray-50 p-6 rounded-2xl shadow">
+
                 <h3 class="text-2xl font-bold mb-4 text-green-600">
                     Analytics
                 </h3>
@@ -81,12 +117,14 @@
                 <ul class="space-y-2 text-gray-700">
                     <li>✔ Bar charts</li>
                     <li>✔ Pie charts</li>
-                    <li>✔ Summary reports</li>
-                    <li>✔ Category analysis</li>
+                    <li>✔ Quality score</li>
+                    <li>✔ Dataset preview</li>
                 </ul>
+
             </div>
 
-            <div class="bg-gray-50 p-6 rounded-2xl shadow hover:shadow-xl transition">
+            <div class="bg-gray-50 p-6 rounded-2xl shadow">
+
                 <h3 class="text-2xl font-bold mb-4 text-purple-600">
                     Multi Format
                 </h3>
@@ -94,16 +132,17 @@
                 <ul class="space-y-2 text-gray-700">
                     <li>✔ Excel support</li>
                     <li>✔ CSV support</li>
-                    <li>✔ Preview datasets</li>
-                    <li>✔ Download cleaned files</li>
+                    <li>✔ JSON support</li>
+                    <li>✔ XML support</li>
                 </ul>
+
             </div>
 
         </div>
     </div>
 </section>
 
-<!-- MAIN DASHBOARD -->
+<!-- DASHBOARD -->
 <section id="upload" class="py-16">
 
     <div class="max-w-7xl mx-auto px-6">
@@ -119,16 +158,23 @@
 
                 <!-- FILE INPUT -->
                 <div class="mb-6">
-                    <label class="font-semibold block mb-2">Choose File</label>
+
+                    <label class="font-semibold block mb-2">
+                        Choose File
+                    </label>
 
                     <input type="file"
                            id="fileInput"
+                           accept=".xlsx,.csv,.json,.xml"
                            class="w-full border p-3 rounded-lg bg-gray-50">
                 </div>
 
                 <!-- SEARCH -->
                 <div class="mb-6">
-                    <label class="font-semibold block mb-2">Search Table</label>
+
+                    <label class="font-semibold block mb-2">
+                        Search Table
+                    </label>
 
                     <input type="text"
                            id="searchInput"
@@ -139,39 +185,67 @@
 
                 <!-- CLEANING OPTIONS -->
                 <div class="mb-6">
-                    <h3 class="text-xl font-bold mb-4">Cleaning Options</h3>
+
+                    <h3 class="text-xl font-bold mb-4">
+                        Cleaning Options
+                    </h3>
 
                     <div class="space-y-3">
 
                         <label class="flex items-center gap-3 bg-gray-50 p-3 rounded-lg">
-                            <input type="checkbox" id="removeDuplicates" checked>
-                            <span>Remove Duplicate Rows</span>
+                            <input type="checkbox"
+                                   id="removeDuplicates"
+                                   checked>
+
+                            <span>
+                                Remove Duplicate Rows
+                            </span>
                         </label>
 
                         <label class="flex items-center gap-3 bg-gray-50 p-3 rounded-lg">
-                            <input type="checkbox" id="removeEmptyRows" checked>
-                            <span>Remove Empty Rows</span>
+                            <input type="checkbox"
+                                   id="removeEmptyRows"
+                                   checked>
+
+                            <span>
+                                Remove Empty Rows
+                            </span>
                         </label>
 
                         <label class="flex items-center gap-3 bg-gray-50 p-3 rounded-lg">
-                            <input type="checkbox" id="properCase" checked>
-                            <span>Convert Text to Proper Case</span>
+                            <input type="checkbox"
+                                   id="removeEmptyColumns"
+                                   checked>
+
+                            <span>
+                                Remove Empty Columns
+                            </span>
                         </label>
 
                         <label class="flex items-center gap-3 bg-gray-50 p-3 rounded-lg">
-                            <input type="checkbox" id="removeEmptyColumns" checked>
-                            <span>Remove Empty Columns</span>
+                            <input type="checkbox"
+                                   id="properCase"
+                                   checked>
+
+                            <span>
+                                Convert Text to Proper Case
+                            </span>
                         </label>
 
                         <label class="flex items-center gap-3 bg-gray-50 p-3 rounded-lg">
-                            <input type="checkbox" id="trimSpaces" checked>
-                            <span>Trim Extra Spaces</span>
+                            <input type="checkbox"
+                                   id="trimSpaces"
+                                   checked>
+
+                            <span>
+                                Trim Extra Spaces
+                            </span>
                         </label>
 
                     </div>
                 </div>
 
-                <!-- ACTION BUTTONS -->
+                <!-- BUTTONS -->
                 <div class="space-y-4">
 
                     <button onclick="previewFile()"
@@ -191,27 +265,67 @@
             <!-- RIGHT PANEL -->
             <div class="lg:col-span-2 space-y-8">
 
-                <!-- SUMMARY CARDS -->
-                <div id="summary" class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <!-- SUMMARY -->
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
 
                     <div class="bg-white rounded-2xl shadow p-6 text-center">
-                        <h3 class="text-gray-500 text-sm">Total Rows</h3>
-                        <p id="totalRows" class="text-3xl font-bold text-blue-600 mt-2">0</p>
+
+                        <h3 class="text-gray-500 text-sm">
+                            Total Rows
+                        </h3>
+
+                        <p id="totalRows"
+                           class="text-3xl font-bold text-blue-600 mt-2">
+                            0
+                        </p>
                     </div>
 
                     <div class="bg-white rounded-2xl shadow p-6 text-center">
-                        <h3 class="text-gray-500 text-sm">Cleaned Rows</h3>
-                        <p id="cleanedRows" class="text-3xl font-bold text-green-600 mt-2">0</p>
+
+                        <h3 class="text-gray-500 text-sm">
+                            Cleaned Rows
+                        </h3>
+
+                        <p id="cleanedRows"
+                           class="text-3xl font-bold text-green-600 mt-2">
+                            0
+                        </p>
                     </div>
 
                     <div class="bg-white rounded-2xl shadow p-6 text-center">
-                        <h3 class="text-gray-500 text-sm">Duplicates</h3>
-                        <p id="duplicates" class="text-3xl font-bold text-yellow-600 mt-2">0</p>
+
+                        <h3 class="text-gray-500 text-sm">
+                            Duplicates
+                        </h3>
+
+                        <p id="duplicates"
+                           class="text-3xl font-bold text-yellow-600 mt-2">
+                            0
+                        </p>
                     </div>
 
                     <div class="bg-white rounded-2xl shadow p-6 text-center">
-                        <h3 class="text-gray-500 text-sm">Columns Removed</h3>
-                        <p id="columnsRemoved" class="text-3xl font-bold text-red-600 mt-2">0</p>
+
+                        <h3 class="text-gray-500 text-sm">
+                            Columns Removed
+                        </h3>
+
+                        <p id="columnsRemoved"
+                           class="text-3xl font-bold text-red-600 mt-2">
+                            0
+                        </p>
+                    </div>
+
+                    <div class="bg-white rounded-2xl shadow p-6 text-center">
+
+                        <h3 class="text-gray-500 text-sm">
+                            Quality Score
+                        </h3>
+
+                        <p id="qualityScore"
+                           class="text-3xl font-bold text-purple-600 mt-2">
+                            0%
+                        </p>
                     </div>
 
                 </div>
@@ -220,35 +334,45 @@
                 <div class="bg-white rounded-2xl shadow-lg p-6">
 
                     <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-2xl font-bold">Dataset Preview</h2>
+
+                        <h2 class="text-2xl font-bold">
+                            Dataset Preview
+                        </h2>
 
                         <span class="text-sm text-gray-500">
                             Live Preview
                         </span>
+
                     </div>
 
                     <div id="tableContainer"
                          class="overflow-auto max-h-[500px] border rounded-lg">
                     </div>
+
                 </div>
 
                 <!-- CHARTS -->
-                <div id="analytics" class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                <div id="analytics"
+                     class="grid grid-cols-1 xl:grid-cols-2 gap-8">
 
                     <div class="bg-white rounded-2xl shadow-lg p-6">
+
                         <h2 class="text-2xl font-bold mb-6">
                             Bar Chart Analytics
                         </h2>
 
                         <canvas id="barChart"></canvas>
+
                     </div>
 
                     <div class="bg-white rounded-2xl shadow-lg p-6">
+
                         <h2 class="text-2xl font-bold mb-6">
                             Pie Chart Analytics
                         </h2>
 
                         <canvas id="pieChart"></canvas>
+
                     </div>
 
                 </div>
@@ -261,8 +385,37 @@
 
 </section>
 
+<!-- AI ASSISTANT -->
+<section id="assistant" class="max-w-5xl mx-auto py-16 px-6">
+
+    <div class="bg-white rounded-2xl shadow-lg p-8">
+
+        <h2 class="text-3xl font-bold mb-6">
+            AI Data Assistant
+        </h2>
+
+        <textarea id="aiQuestion"
+                  class="w-full border p-4 rounded-xl"
+                  rows="4"
+                  placeholder="Ask something about your dataset..."></textarea>
+
+        <button type="button"
+                onclick="askAI()"
+                class="bg-indigo-600 text-white px-6 py-3 rounded-xl mt-4">
+            Ask AI
+        </button>
+
+        <div id="aiResponse"
+             class="mt-6 bg-gray-100 p-4 rounded-xl text-gray-700">
+        </div>
+
+    </div>
+
+</section>
+
 <!-- FOOTER -->
 <footer class="bg-gray-900 text-white py-10 mt-16">
+
     <div class="max-w-6xl mx-auto px-6 text-center">
 
         <h2 class="text-2xl font-bold mb-4">
@@ -270,14 +423,15 @@
         </h2>
 
         <p class="text-gray-400 mb-4">
-            Smart data cleaning and analytics platform built using Spring Boot, Thymeleaf and Tailwind CSS.
+            Smart data cleaning platform using Spring Boot + Thymeleaf + Tailwind CSS.
         </p>
 
         <p class="text-sm text-gray-500">
-            © 2026 Data Cleaner Pro. All rights reserved.
+            © 2026 Data Cleaner Pro
         </p>
 
     </div>
+
 </footer>
 
 <script>
@@ -285,50 +439,66 @@
 let tableData = [];
 
 function scrollToUpload() {
-    document.getElementById("upload").scrollIntoView({
-        behavior: "smooth"
-    });
+
+    document.getElementById("upload")
+        .scrollIntoView({
+            behavior: "smooth"
+        });
 }
 
 function previewFile() {
 
-    const file = document.getElementById("fileInput").files[0];
+    const file =
+        document.getElementById("fileInput").files[0];
 
     if (!file) {
+
         alert("Please select a file first!");
         return;
     }
 
     const formData = new FormData();
+
     formData.append("file", file);
 
     fetch("/api/excel/preview", {
+
         method: "POST",
         body: formData
-    })
-    .then(res => res.json())
-    .then(res => {
 
+    })
+
+    .then(res => res.json())
+
+    .then(res => {
+        console.log(res);
         tableData = res.data;
 
         displayTable(res.data);
-        updateSummary(res.summary);
-        generateCharts(res.data);
 
+        updateSummary(res.summary);
+
+        generateCharts(res.data);
     });
 }
 
 function displayTable(data) {
 
-    let html = `
-        <table class="min-w-full text-sm text-left border-collapse">
-    `;
+    let html =
+        `<table class="min-w-full text-sm text-left border-collapse">`;
 
     data.forEach((row, rowIndex) => {
 
-        html += `<tr class="${rowIndex === 0 ? 'bg-blue-600 text-white sticky top-0' : 'hover:bg-gray-100'}">`;
+        html += `
+            <tr class="${
+                rowIndex === 0
+                ? 'bg-blue-600 text-white sticky top-0'
+                : 'hover:bg-gray-100'
+            }">
+        `;
 
         row.forEach(cell => {
+
             html += `
                 <td class="border px-4 py-2 whitespace-nowrap">
                     ${cell}
@@ -341,39 +511,67 @@ function displayTable(data) {
 
     html += `</table>`;
 
-    document.getElementById("tableContainer").innerHTML = html;
+    document.getElementById("tableContainer")
+        .innerHTML = html;
 }
 
 function filterTable() {
 
-    let val = document.getElementById("searchInput")
-        .value
-        .toLowerCase();
+    let val =
+        document.getElementById("searchInput")
+            .value
+            .toLowerCase();
 
-    let filtered = tableData.filter(row =>
-        row.some(cell =>
-            cell.toLowerCase().includes(val)
-        )
-    );
+    let filtered =
+        tableData.filter(row =>
+
+            row.some(cell =>
+
+                String(cell).toLowerCase().includes(val)
+            )
+        );
 
     displayTable(filtered);
 }
 
 function updateSummary(summary) {
 
-    document.getElementById("totalRows").innerText = summary.totalRows;
-    document.getElementById("cleanedRows").innerText = summary.cleanedRows;
-    document.getElementById("duplicates").innerText = summary.duplicatesRemoved;
-    document.getElementById("columnsRemoved").innerText = summary.columnsRemoved;
+    document.getElementById("totalRows")
+        .innerText = summary.totalRows;
+
+    document.getElementById("cleanedRows")
+        .innerText = summary.cleanedRows;
+
+    document.getElementById("duplicates")
+        .innerText = summary.duplicatesRemoved;
+
+    document.getElementById("columnsRemoved")
+        .innerText = summary.columnsRemoved;
+
+    document.getElementById("qualityScore")
+        .innerText = summary.qualityScore + "%";
 }
 
 function generateCharts(data) {
 
+    if (!data || data.length <= 1) {
+        return;
+    }
+
     let counts = {};
 
+    // skip header row
     data.slice(1).forEach(row => {
 
-        let key = row[0] || "Empty";
+        if (!row || row.length === 0) {
+            return;
+        }
+
+        let key = String(row[0] || "Empty").trim();
+
+        if (key === "") {
+            key = "Empty";
+        }
 
         counts[key] = (counts[key] || 0) + 1;
     });
@@ -381,18 +579,31 @@ function generateCharts(data) {
     const labels = Object.keys(counts);
     const values = Object.values(counts);
 
-    if (window.barChart) window.barChart.destroy();
-    if (window.pieChart) window.pieChart.destroy();
+    // DESTROY OLD CHARTS
+    if (window.barChart instanceof Chart) {
+        window.barChart.destroy();
+    }
+
+    if (window.pieChart instanceof Chart) {
+        window.pieChart.destroy();
+    }
 
     // BAR CHART
-    window.barChart = new Chart(document.getElementById("barChart"), {
+    const barCanvas =
+        document.getElementById("barChart");
 
-        type: 'bar',
+    const barCtx =
+        barCanvas.getContext("2d");
+
+    window.barChart = new Chart(barCtx, {
+
+        type: "bar",
 
         data: {
             labels: labels,
+
             datasets: [{
-                label: 'Category Count',
+                label: "Records",
                 data: values,
                 borderWidth: 1
             }]
@@ -400,12 +611,7 @@ function generateCharts(data) {
 
         options: {
             responsive: true,
-            plugins: {
-                title: {
-                    display: true,
-                    text: 'Dataset Category Distribution'
-                }
-            },
+
             scales: {
                 y: {
                     beginAtZero: true
@@ -415,35 +621,38 @@ function generateCharts(data) {
     });
 
     // PIE CHART
-    window.pieChart = new Chart(document.getElementById("pieChart"), {
+    const pieCanvas =
+        document.getElementById("pieChart");
 
-        type: 'pie',
+    const pieCtx =
+        pieCanvas.getContext("2d");
+
+    window.pieChart = new Chart(pieCtx, {
+
+        type: "pie",
 
         data: {
             labels: labels,
+
             datasets: [{
-                label: 'Category Share',
                 data: values
             }]
         },
 
         options: {
-            responsive: true,
-            plugins: {
-                title: {
-                    display: true,
-                    text: 'Dataset Share Analysis'
-                }
-            }
+            responsive: true
         }
     });
 }
 
+
 function downloadFile() {
 
-    const file = document.getElementById("fileInput").files[0];
+    const file =
+        document.getElementById("fileInput").files[0];
 
     if (!file) {
+
         alert("Please select a file first!");
         return;
     }
@@ -452,7 +661,6 @@ function downloadFile() {
 
     formData.append("file", file);
 
-    // OPTIONS
     formData.append(
         "properCase",
         document.getElementById("properCase").checked
@@ -479,22 +687,54 @@ function downloadFile() {
     );
 
     fetch("/api/excel/clean", {
+
         method: "POST",
         body: formData
+
     })
+
     .then(res => res.blob())
+
     .then(blob => {
 
-        const url = window.URL.createObjectURL(blob);
+        const url =
+            window.URL.createObjectURL(blob);
 
-        const a = document.createElement("a");
+        const a =
+            document.createElement("a");
 
         a.href = url;
+
         a.download = "cleaned.xlsx";
 
         a.click();
     });
 }
+
+async function askAI() {
+
+    const question =
+        document.getElementById("aiQuestion").value;
+
+    const response = await fetch("/api/ai/ask", {
+
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+            question: question
+        })
+    });
+
+    const result = await response.text();
+
+    document.getElementById("aiResponse")
+        .innerHTML = result;
+}
+
 </script>
 
 </body>
