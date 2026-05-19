@@ -554,32 +554,178 @@ function updateSummary(summary) {
 
 function generateCharts(data) {
 
-    if (!data || data.length <= 1) {
+    if (!data || data.length < 2) {
         return;
     }
 
-    let counts = {};
+    const headers = data[0];
 
-    // skip header row
+    // =========================
+    // FIND BEST NUMERIC COLUMN
+    // =========================
+    let numericCol = -1;
+    let maxNumeric = 0;
+
+    for (let col = 0; col < headers.length; col++) {
+
+        let numericCount = 0;
+
+        for (let i = 1; i < data.length; i++) {
+
+            let value =
+                parseFloat(
+                    String(data[i][col])
+                        .replace(/,/g, "")
+                );
+
+            if (!isNaN(value)) {
+                numericCount++;
+            }
+        }
+
+        if (numericCount > maxNumeric) {
+            maxNumeric = numericCount;
+            numericCol = col;
+        }
+    }
+
+    // =========================
+    // FIND BEST CATEGORY COLUMN
+    // =========================
+    let categoryCol = -1;
+
+    for (let col = 0; col < headers.length; col++) {
+
+        if (col === numericCol) continue;
+
+        let unique = new Set();
+
+        for (let i = 1; i < data.length; i++) {
+
+            let val = data[i][col];
+
+            if (val && val !== "") {
+                unique.add(val);
+            }
+        }
+
+        // Good category column:
+        // not too many unique values
+        if (unique.size > 1 && unique.size <= 15) {
+            categoryCol = col;
+            break;
+        }
+    }
+
+    // fallback
+    if (categoryCol === -1) {
+        categoryCol = 0;
+    }
+
+    // =========================
+    // GROUP DATA
+    // =========================
+    let grouped = {};
+
     data.slice(1).forEach(row => {
 
-        if (!row || row.length === 0) {
-            return;
+        let category =
+            String(
+                row[categoryCol] || "Empty"
+            ).trim();
+
+        let value =
+            parseFloat(
+                String(row[numericCol])
+                    .replace(/,/g, "")
+            );
+
+        if (isNaN(value)) {
+            value = 0;
         }
 
-        let key = String(row[0] || "Empty").trim();
-
-        if (key === "") {
-            key = "Empty";
-        }
-
-        counts[key] = (counts[key] || 0) + 1;
+        grouped[category] =
+            (grouped[category] || 0) + value;
     });
 
-    const labels = Object.keys(counts);
-    const values = Object.values(counts);
+    // =========================
+    // SORT DESC
+    // =========================
+    let sorted = Object.entries(grouped)
+        .sort((a, b) => b[1] - a[1]);
 
-    // DESTROY OLD CHARTS
+    // TOP 10 ONLY
+    sorted = sorted.slice(0, 10);
+
+    const labels =
+        sorted.map(x => x[0]);
+
+    const values =
+        sorted.map(x => x[1]);
+
+    // =========================
+    // KPI INSIGHTS
+    // =========================
+    const total =
+        values.reduce((a, b) => a + b, 0);
+
+    const maxValue =
+        Math.max(...values);
+
+    const maxIndex =
+        values.indexOf(maxValue);
+
+    const topCategory =
+        labels[maxIndex];
+
+    // =========================
+    // SHOW INSIGHTS
+    // =========================
+    document.getElementById("aiResponse")
+        .innerHTML = `
+
+        <div class="space-y-2">
+
+            <p>
+                📊 <b>Smart Dataset Insights</b>
+            </p>
+
+            <p>
+                • Best Category:
+                <b>${topCategory}</b>
+            </p>
+
+            <p>
+                • Highest ${headers[numericCol]}:
+                <b>${maxValue}</b>
+            </p>
+
+            <p>
+                • Total ${headers[numericCol]}:
+                <b>${total}</b>
+            </p>
+
+            <p>
+                • Analytics generated using:
+                <b>${headers[categoryCol]}</b>
+                vs
+                <b>${headers[numericCol]}</b>
+            </p>
+
+        </div>
+    `;
+
+    renderCharts(
+        labels,
+        values,
+        headers[categoryCol],
+        headers[numericCol]
+    );
+}
+
+function renderCharts(labels, values, xLabel, yLabel) {
+
+    // destroy old
     if (window.barChart instanceof Chart) {
         window.barChart.destroy();
     }
@@ -588,31 +734,47 @@ function generateCharts(data) {
         window.pieChart.destroy();
     }
 
+    // =========================
     // BAR CHART
-    const barCanvas =
-        document.getElementById("barChart");
-
+    // =========================
     const barCtx =
-        barCanvas.getContext("2d");
+        document.getElementById("barChart")
+            .getContext("2d");
 
     window.barChart = new Chart(barCtx, {
 
         type: "bar",
 
         data: {
+
             labels: labels,
 
             datasets: [{
-                label: "Records",
+                label: yLabel,
                 data: values,
-                borderWidth: 1
+                borderWidth: 2,
+                borderRadius: 10
             }]
         },
 
         options: {
+
             responsive: true,
 
+            plugins: {
+
+                legend: {
+                    display: true
+                },
+
+                title: {
+                    display: true,
+                    text: `${yLabel} by ${xLabel}`
+                }
+            },
+
             scales: {
+
                 y: {
                     beginAtZero: true
                 }
@@ -620,18 +782,19 @@ function generateCharts(data) {
         }
     });
 
+    // =========================
     // PIE CHART
-    const pieCanvas =
-        document.getElementById("pieChart");
-
+    // =========================
     const pieCtx =
-        pieCanvas.getContext("2d");
+        document.getElementById("pieChart")
+            .getContext("2d");
 
     window.pieChart = new Chart(pieCtx, {
 
         type: "pie",
 
         data: {
+
             labels: labels,
 
             datasets: [{
@@ -640,7 +803,20 @@ function generateCharts(data) {
         },
 
         options: {
-            responsive: true
+
+            responsive: true,
+
+            plugins: {
+
+                legend: {
+                    position: "bottom"
+                },
+
+                title: {
+                    display: true,
+                    text: `${yLabel} Distribution`
+                }
+            }
         }
     });
 }
