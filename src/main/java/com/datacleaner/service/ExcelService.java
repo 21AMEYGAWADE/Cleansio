@@ -153,21 +153,21 @@ public class ExcelService {
             throw new RuntimeException(e);
         }
     }
-
     // =========================
-    // CLEAN
-    // =========================
-    public ByteArrayInputStream clean(
+        // CLEAN
+        // =========================
 
-            MultipartFile file,
+        public ByteArrayInputStream clean(
 
-            boolean properCase,
-            boolean removeDuplicates,
-            boolean removeEmptyRows,
-            boolean removeEmptyColumns,
-            boolean trimSpaces
+                MultipartFile file,
 
-    ) {
+                boolean properCase,
+                boolean removeDuplicates,
+                boolean removeEmptyRows,
+                boolean removeEmptyColumns,
+                boolean trimSpaces
+
+        ) {
 
         this.properCaseEnabled = properCase;
         this.removeDuplicatesEnabled = removeDuplicates;
@@ -175,111 +175,346 @@ public class ExcelService {
         this.removeEmptyColumnsEnabled = removeEmptyColumns;
         this.trimSpacesEnabled = trimSpaces;
 
-        try (
+        try {
+
+                String extension =
+                        getFileExtension(
+                                file.getOriginalFilename()
+                        );
+
+                List<List<String>> data =
+                        new ArrayList<>();
+
+                // ================= XLSX =================
+
+                if (extension.equals("xlsx")) {
 
                 Workbook workbook =
                         new XSSFWorkbook(
                                 file.getInputStream()
                         );
 
-                Workbook cleanedWorkbook =
-                        new XSSFWorkbook()
+                Sheet sheet =
+                        workbook.getSheetAt(0);
 
-        ) {
+                for (Row row : sheet) {
 
-            Sheet sheet =
-                    workbook.getSheetAt(0);
+                        List<String> rowData =
+                                new ArrayList<>();
 
-            Sheet cleanedSheet =
-                    cleanedWorkbook.createSheet(
-                            "Cleaned Data"
-                    );
+                        int lastColumn =
+                                row.getLastCellNum();
 
-            List<Integer> validColumns;
+                        for (int i = 0;
+                        i < lastColumn;
+                        i++) {
 
-            if (removeEmptyColumnsEnabled) {
-
-                validColumns =
-                        getNonEmptyColumns(sheet);
-
-            } else {
-
-                validColumns =
-                        new ArrayList<>();
-
-                Row header =
-                        sheet.getRow(0);
-
-                for (int i = 0;
-                     i < header.getLastCellNum();
-                     i++) {
-
-                    validColumns.add(i);
-                }
-            }
-
-            Set<String> uniqueRows =
-                    new HashSet<>();
-
-            int cleanedRowIndex = 0;
-
-            for (Row row : sheet) {
-
-                if (
-                        removeEmptyRowsEnabled
-                                && isRowEmpty(row)
-                ) {
-                    continue;
-                }
-
-                String rowKey =
-                        rowToString(
-                                row,
-                                validColumns
+                        Cell cell = row.getCell(
+                                i,
+                                Row.MissingCellPolicy.CREATE_NULL_AS_BLANK
                         );
 
+                        rowData.add(
+                                getCellValue(cell)
+                        );
+                        }
+
+                        data.add(rowData);
+                }
+
+                workbook.close();
+                }
+
+                // ================= CSV =================
+
+                else if (extension.equals("csv")) {
+
+                List<List<String>> csvData =
+                        readCSV(file.getInputStream());
+
+                for (List<String> row : csvData) {
+
+                        List<String> cleanedRow =
+                                new ArrayList<>();
+
+                        for (String value : row) {
+
+                        cleanedRow.add(
+                                cleanTextValue(value)
+                        );
+                        }
+
+                        data.add(cleanedRow);
+                }
+                }
+
+                // ================= JSON =================
+
+                else if (extension.equals("json")) {
+
+                List<List<String>> jsonData =
+                        readJSON(file.getInputStream());
+
+                for (List<String> row : jsonData) {
+
+                        List<String> cleanedRow =
+                                new ArrayList<>();
+
+                        for (String value : row) {
+
+                        cleanedRow.add(
+                                cleanTextValue(value)
+                        );
+                        }
+
+                        data.add(cleanedRow);
+                }
+                }
+
+                // ================= XML =================
+
+                else if (extension.equals("xml")) {
+
+                List<List<String>> xmlData =
+                        readXML(file.getInputStream());
+
+                for (List<String> row : xmlData) {
+
+                        List<String> cleanedRow =
+                                new ArrayList<>();
+
+                        for (String value : row) {
+
+                        cleanedRow.add(
+                                cleanTextValue(value)
+                        );
+                        }
+
+                        data.add(cleanedRow);
+                }
+                }
+
+                // ================= REMOVE EMPTY COLUMNS =================
+
+                if (removeEmptyColumnsEnabled && !data.isEmpty()) {
+
+                List<Integer> validColumns =
+                        new ArrayList<>();
+
+                int totalColumns =
+                        data.get(0).size();
+
+                for (int col = 0;
+                        col < totalColumns;
+                        col++) {
+
+                        boolean hasData = false;
+
+                        for (List<String> row : data) {
+
+                        if (col < row.size()) {
+
+                                String value =
+                                        row.get(col);
+
+                                if (
+                                        value != null &&
+                                        !value.trim().isEmpty()
+                                ) {
+
+                                hasData = true;
+                                break;
+                                }
+                        }
+                        }
+
+                        if (hasData) {
+
+                        validColumns.add(col);
+                        }
+                }
+
+                List<List<String>> updatedData =
+                        new ArrayList<>();
+
+                for (List<String> row : data) {
+
+                        List<String> newRow =
+                                new ArrayList<>();
+
+                        for (Integer col : validColumns) {
+
+                        if (col < row.size()) {
+
+                                newRow.add(row.get(col));
+
+                        } else {
+
+                                newRow.add("");
+                        }
+                        }
+
+                        updatedData.add(newRow);
+                }
+
+                data = updatedData;
+                }
+
+                // ================= CLEAN ROWS =================
+
+                List<List<String>> cleanedData =
+                        new ArrayList<>();
+
+                Set<String> uniqueRows =
+                        new HashSet<>();
+
+                for (List<String> row : data) {
+
+                // EMPTY ROW CHECK
+
+                boolean empty = true;
+
+                for (String cell : row) {
+
+                        if (
+                                cell != null &&
+                                !cell.trim().isEmpty()
+                        ) {
+
+                        empty = false;
+                        break;
+                        }
+                }
+
                 if (
-                        removeDuplicatesEnabled
-                                && uniqueRows.contains(rowKey)
+                        removeEmptyRowsEnabled &&
+                        empty
                 ) {
-                    continue;
+                        continue;
+                }
+
+                // DUPLICATE CHECK
+
+                String rowKey =
+                        String.join("|", row);
+
+                if (
+                        removeDuplicatesEnabled &&
+                        uniqueRows.contains(rowKey)
+                ) {
+                        continue;
                 }
 
                 uniqueRows.add(rowKey);
 
-                Row cleanedRow =
-                        cleanedSheet.createRow(
-                                cleanedRowIndex++
+                cleanedData.add(row);
+                }
+
+                // ================= EXPORT TO EXCEL =================
+
+                Workbook cleanedWorkbook =
+                        new XSSFWorkbook();
+
+                Sheet cleanedSheet =
+                        cleanedWorkbook.createSheet(
+                                "Cleaned Data"
                         );
 
-                copyRow(
-                        row,
-                        cleanedRow,
-                        validColumns
+                for (int i = 0;
+                i < cleanedData.size();
+                i++) {
+
+                Row row =
+                        cleanedSheet.createRow(i);
+
+                List<String> rowData =
+                        cleanedData.get(i);
+
+                for (int j = 0;
+                        j < rowData.size();
+                        j++) {
+
+                        Cell cell =
+                                row.createCell(j);
+
+                        cell.setCellValue(
+                                rowData.get(j)
+                        );
+                }
+                }
+
+                // AUTO SIZE
+
+                if (!cleanedData.isEmpty()) {
+
+                for (int i = 0;
+                        i < cleanedData.get(0).size();
+                        i++) {
+
+                        cleanedSheet.autoSizeColumn(i);
+                }
+                }
+
+                ByteArrayOutputStream out =
+                        new ByteArrayOutputStream();
+
+                cleanedWorkbook.write(out);
+
+                cleanedWorkbook.close();
+
+                return new ByteArrayInputStream(
+                        out.toByteArray()
                 );
-            }
-
-            for (int i = 0;
-                 i < validColumns.size();
-                 i++) {
-
-                cleanedSheet.autoSizeColumn(i);
-            }
-
-            ByteArrayOutputStream out =
-                    new ByteArrayOutputStream();
-
-            cleanedWorkbook.write(out);
-
-            return new ByteArrayInputStream(
-                    out.toByteArray()
-            );
 
         } catch (Exception e) {
 
-            throw new RuntimeException(e);
+                e.printStackTrace();
+
+                throw new RuntimeException(e);
+        }
+        }
+
+
+        private String cleanTextValue(String value) {
+
+    if (value == null) {
+        return "";
+    }
+
+    // TRIM SPACES
+
+    if (trimSpacesEnabled) {
+
+        value = value
+                .replaceAll("\\s+", " ")
+                .trim();
+    }
+
+    // PROPER CASE
+
+    if (properCaseEnabled) {
+
+        if (
+                !value.contains("@") &&
+                !value.matches(".*\\d.*")
+        ) {
+
+            value = toProperCase(value);
         }
     }
+
+    // EMAIL VALIDATION
+
+    if (value.contains("@")) {
+
+        if (!isValidEmail(value)) {
+
+            value = "INVALID_EMAIL";
+        }
+    }
+
+    return value;
+}
 
     // =========================
     // NON EMPTY COLUMNS
@@ -421,46 +656,12 @@ public class ExcelService {
     }
 
     private String getCellValue(Cell cell) {
-
         if (cell == null) {
-            return "";
+                return "";
         }
 
-        String value = cell.toString();
-
-        // TRIM
-        if (trimSpacesEnabled) {
-
-            value = value
-                    .replaceAll("\\s+", " ")
-                    .trim();
+        return cleanTextValue(cell.toString());
         }
-
-        // PROPER CASE
-        if (properCaseEnabled) {
-
-            if (
-                    !value.contains("@")
-                            && !value.matches(".*\\d.*")
-            ) {
-
-                value =
-                        toProperCase(value);
-            }
-        }
-
-        // EMAIL VALIDATION
-        if (value.contains("@")) {
-
-            if (!isValidEmail(value)) {
-
-                value = "INVALID_EMAIL";
-            }
-        }
-
-        return value;
-    }
-
     private String getRawCellValue(Cell cell) {
 
         if (cell == null) {
