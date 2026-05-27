@@ -1,0 +1,161 @@
+[
+  {
+    "name": "   LUKAS   ",
+    "department": "IT",
+    "city": "Mumbai",
+    "salary": 75000,
+    "email": "lukas@gmail.com",
+    "status": "ACTIVE",
+    "category": "A"
+  },
+
+  {
+    "name": "john doe",
+    "department": "HR",
+    "city": "Pune",
+    "salary": 55000,
+    "email": "john@gmail.com",
+    "status": "inactive",
+    "category": "B"
+  },
+
+  {
+    "name": "john doe",
+    "department": "HR",
+    "city": "Pune",
+    "salary": 55000,
+    "email": "john@gmail.com",
+    "status": "inactive",
+    "category": "B"
+  },
+
+  {
+    "name": "EMILY",
+    "department": "Finance",
+    "city": "Delhi",
+    "salary": 82000,
+    "email": "emilygmail.com",
+    "status": "ACTIVE",
+    "category": "A"
+  },
+
+  {
+    "name": "",
+    "department": "R&D",
+    "city": "Bangalore",
+    "salary": 92000,
+    "email": "research@gmail.com",
+    "status": "Active",
+    "category": "C"
+  },
+
+  {
+    "name": "Sophia",
+    "department": "",
+    "city": "Mumbai",
+    "salary": 76000,
+    "email": "sophia@gmail.com",
+    "status": "Active",
+    "category": "A"
+  },
+
+  {
+    "name": "MICHAEL",
+    "department": "Sales",
+    "city": "Chennai",
+    "salary": 61000,
+    "email": "michael@gmail",
+    "status": "Inactive",
+    "category": "B"
+  },
+
+  {
+    "name": "David",
+    "department": "IT",
+    "city": "",
+    "salary": 75000,
+    "email": "david@gmail.com",
+    "status": "Active",
+    "category": "A"
+  },
+
+  {
+    "name": "Emma",
+    "department": "Finance",
+    "city": "Pune",
+    "salary": "",
+    "email": "emma@gmail.com",
+    "status": "Active",
+    "category": "C"
+  },
+
+  {
+    "name": "Chris",
+    "department": "Sales",
+    "city": "Delhi",
+    "salary": 49000,
+    "email": "chris@gmail.com",
+    "status": "Inactive",
+    "category": "B"
+  },
+
+  {
+    "name": " Olivia ",
+    "department": "Marketing",
+    "city": "Hyderabad",
+    "salary": 68000,
+    "email": "olivia@gmail",
+    "status": "Active",
+    "category": "D"
+  },
+
+  {
+    "name": "Noah",
+    "department": "Support",
+    "city": "Kolkata",
+    "salary": 47000,
+    "email": "noahgmail.com",
+    "status": "Inactive",
+    "category": "E"
+  },
+
+  {
+    "name": "AVA",
+    "department": "IT",
+    "city": "Mumbai",
+    "salary": 81000,
+    "email": "ava@gmail.com",
+    "status": "ACTIVE",
+    "category": "A"
+  },
+
+  {
+    "name": "Ethan",
+    "department": "HR",
+    "city": "Pune",
+    "salary": 52000,
+    "email": "ethan@gmail.com",
+    "status": "inactive",
+    "category": "B"
+  },
+
+  {
+    "name": "Mia",
+    "department": "Finance",
+    "city": "Delhi",
+    "salary": 91000,
+    "email": "mia@gmail.com",
+    "status": "Active",
+    "category": "C"
+  },
+
+  {
+    "name": "   Sophia   ",
+    "department": "IT",
+    "city": "Mumbai",
+    "salary": 76000,
+    "email": "sophia@gmail.com",
+    "status": "Active",
+    "category": "A"
+  }
+]

@@ -749,41 +749,95 @@ public class ExcelService {
         }
 
         return result;
-    }
-
-    // =========================
-    // XML
-    // =========================
-    private List<List<String>> readXML(
-            InputStream inputStream
-    ) throws Exception {
-
-        XmlMapper xmlMapper =
-                new XmlMapper();
-
-        Map<String, Object> xmlData =
-                xmlMapper.readValue(
-                        inputStream,
-                        Map.class
-                );
-
-        List<List<String>> result =
-                new ArrayList<>();
-
-        for (Object value : xmlData.values()) {
-
-            List<String> row =
-                    new ArrayList<>();
-
-            row.add(
-                    String.valueOf(value)
-            );
-
-            result.add(row);
         }
 
-        return result;
-    }
+        // =========================
+        // XML
+        // =========================
+        private List<List<String>> readXML(
+                InputStream inputStream
+        ) throws Exception {
+
+        BufferedReader br =
+                new BufferedReader(
+                        new InputStreamReader(inputStream)
+                );
+
+        List<List<String>> data =
+                new ArrayList<>();
+
+        List<String> currentRow = null;
+
+        String line;
+
+        while ((line = br.readLine()) != null) {
+
+                line = line.trim();
+
+                // START EMPLOYEE
+                if (line.startsWith("<employee>")) {
+
+                currentRow = new ArrayList<>();
+                }
+
+                // END EMPLOYEE
+                else if (line.startsWith("</employee>")) {
+
+                if (currentRow != null) {
+
+                        data.add(currentRow);
+                }
+                }
+
+                // EXTRACT VALUES
+                else if (
+                        line.startsWith("<")
+                        && line.contains(">")
+                        && !line.startsWith("</")
+                ) {
+
+                int start =
+                        line.indexOf(">") + 1;
+
+                int end =
+                        line.lastIndexOf("<");
+
+                if (start < end) {
+
+                        String value =
+                                line.substring(start, end);
+
+                        // APPLY CLEANING
+                        value =
+                                value.replaceAll("\\s+", " ")
+                                        .trim();
+
+                        if (
+                                properCaseEnabled
+                                && !value.contains("@")
+                                && !value.matches(".*\\d.*")
+                        ) {
+
+                        value =
+                                toProperCase(value);
+                        }
+
+                        if (
+                                value.contains("@")
+                                && !isValidEmail(value)
+                        ) {
+
+                        value = "INVALID_EMAIL";
+                        }
+
+                        currentRow.add(value);
+                }
+                }
+        }
+
+        return data;
+        }
+
 
     // =========================
     // EMAIL VALIDATION

@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<employees>
+
+    <employee>
+        <id>EMP231</id>
+        <name>Harsh Mehta</name>
+        <department>AI</department>
+        <city>Mumbai</city>
+        <salary>98000</salary>
+        <performance>Excellent</performance>
+        <gender>Male</gender>
+        <experience>7</experience>
+        <status>Active</status>
+        <email>harsh@company.com</email>
+    </employee>
+
+    <employee>
+        <id>EMP232</id>
+        <name>Kiara Sen</name>
+        <department>HR</department>
+        <city>Delhi</city>
+        <salary>56000</salary>
+        <performance>Good</performance>
+        <gender>Female</gender>
+        <experience>4</experience>
+        <status>Active</status>
+        <email>kiara@company.com</email>
+    </employee>
+
+    <employee>
+        <id>EMP233</id>
+        <name>Jason Roy</name>
+        <department>Finance</department>
+        <city>Pune</city>
+        <salary>74000</salary>
+        <performance>Average</performance>
+        <gender>Male</gender>
+        <experience>5</experience>
+        <status>Inactive</status>
+        <email>jason@company.com</email>
+    </employee>
+
+    <employee>
+        <id>EMP234</id>
+        <name>Anjali Rao</name>
+        <department>Marketing</department>
+        <city>Bangalore</city>
+        <salary>65000</salary>
+        <performance>Excellent</performance>
+        <gender>Female</gender>
+        <experience>6</experience>
+        <status>Active</status>
+        <email>anjali@company.com</email>
+    </employee>
+
+    <employee>
+        <id>EMP235</id>
+        <name>Victor Adams</name>
+        <department>IT</department>
+        <city>Hyderabad</city>
+        <salary>93000</salary>
+        <performance>Excellent</performance>
+        <gender>Male</gender>
+        <experience>10</experience>
+        <status>Active</status>
+        <email>victor@company.com</email>
+    </employee>
+
+    <!-- DUPLICATE -->
+    <employee>
+        <id>EMP235</id>
+        <name>Victor Adams</name>
+        <department>IT</department>
+        <city>Hyderabad</city>
+        <salary>93000</salary>
+        <performance>Excellent</performance>
+        <gender>Male</gender>
+        <experience>10</experience>
+        <status>Active</status>
+        <email>victor@company.com</email>
+    </employee>
+
+    <!-- EXTRA SPACES -->
+    <employee>
+        <id>EMP236</id>
+        <name>   Olivia   Green   </name>
+        <department>Sales</department>
+        <city>Mumbai</city>
+        <salary>51000</salary>
+        <performance>Good</performance>
+        <gender>Female</gender>
+        <experience>3</experience>
+        <status>Active</status>
+        <email>   olivia@company.com   </email>
+    </employee>
+
+    <!-- INVALID EMAIL -->
+    <employee>
+        <id>EMP237</id>
+        <name>Chris Nolan</name>
+        <department>AI</department>
+        <city>Delhi</city>
+        <salary>115000</salary>
+        <performance>Excellent</performance>
+        <gender>Male</gender>
+        <experience>12</experience>
+        <status>Active</status>
+        <email>chris@@company.com</email>
+    </employee>
+
+    <!-- EMPTY VALUES -->
+    <employee>
+        <id>EMP238</id>
+        <name></name>
+        <department></department>
+        <city></city>
+        <salary></salary>
+        <performance></performance>
+        <gender></gender>
+        <experience></experience>
+        <status></status>
+        <email></email>
+    </employee>
+
+    <!-- RANDOM CASE -->
+    <employee>
+        <id>EMP239</id>
+        <name>LuKAs KING</name>
+        <department>AI Research</department>
+        <city>Pune</city>
+        <salary>125000</salary>
+        <performance>Excellent</performance>
+        <gender>Male</gender>
+        <experience>13</experience>
+        <status>Active</status>
+        <email>lukas@company.com</email>
+    </employee>
+
+    <employee>
+        <id>EMP240</id>
+        <name>Aarohi Sharma</name>
+        <department>HR</department>
+        <city>Chennai</city>
+        <salary>54000</salary>
+        <performance>Excellent</performance>
+        <gender>Female</gender>
+        <experience>3</experience>
+        <status>Active</status>
+        <email>aarohi@company.com</email>
+    </employee>
+    <employee>
+    	<id>EMP241</id>
+    	<name>Benjamin Fox</name>
+    	<department>IT</department>
+    	<city>Bangalore</city>
+    	<salary>95000</salary>
+    	<performance>Excellent</performance>
+    	<gender>Male</gender>
+    	<experience>9</experience>
+    	<status>Active</status>
+    	<email>benjamin@company.com</email>
+     </employee>
+
+     <employee>
+    	<id>EMP242</id>
+    	<name>Trisha Roy</name>
+    	<department>Sales</department>
+    	<city>Chennai</city>
+    	<salary>49000</salary>
+    	<performance>Good</performance>
+    	<gender>Female</gender>
+    	<experience>3</experience>
+    	<status>Active</status>
+    	<email>trisha@company.com</email>
+     </employee>
+
+     <employee>
+   	<id>EMP243</id>
+    	<name>Henry Walker</name>
+    	<department>Finance</department>
+    	<city>Hyderabad</city>
+    	<salary>78000</salary>
+    	<performance>Excellent</performance>
+    	<gender>Male</gender>
+    	<experience>8</experience>
+    	<status>Active</status>
+    	<email>henry@company.com</email>
+     </employee>
+
+<employee>
+    <id>EMP244</id>
+    <name>Megha Jain</name>
+    <department>Marketing</department>
+    <city>Mumbai</city>
+    <salary>66000</salary>
+    <performance>Average</performance>
+    <gender>Female</gender>
+    <experience>6</experience>
+    <status>Inactive</status>
+    <email>megha@company.com</email>
+</employee>
+
+<employee>
+    <id>EMP245</id>
+    <name>Chris Evans</name>
+    <department>AI</department>
+    <city>Delhi</city>
+    <salary>118000</salary>
+    <performance>Excellent</performance>
+    <gender>Male</gender>
+    <experience>12</experience>
+    <status>Active</status>
+    <email>chris@company.com</email>
+</employee>
+
+<!-- DUPLICATE -->
+<employee>
+    <id>EMP245</id>
+    <name>Chris Evans</name>
+    <department>AI</department>
+    <city>Delhi</city>
+    <salary>118000</salary>
+    <performance>Excellent</performance>
+    <gender>Male</gender>
+    <experience>12</experience>
+    <status>Active</status>
+    <email>chris@company.com</email>
+</employee>
+
+<!-- EXTRA SPACES -->
+<employee>
+    <id>EMP246</id>
+    <name>   Sophia   Turner   </name>
+    <department>HR</department>
+    <city>   Pune   </city>
+    <salary>57000</salary>
+    <performance>Good</performance>
+    <gender>Female</gender>
+    <experience>4</experience>
+    <status>Active</status>
+    <email>   sophia@company.com   </email>
+</employee>
+
+<!-- INVALID EMAIL -->
+<employee>
+    <id>EMP247</id>
+    <name>Michael Jordan</name>
+    <department>Marketing</department>
+    <city>Bangalore</city>
+    <salary>68000</salary>
+    <performance>Average</performance>
+    <gender>Male</gender>
+    <experience>5</experience>
+    <status>Inactive</status>
+    <email>michael#company.com</email>
+</employee>
+
+<!-- EMPTY ROW -->
+<employee>
+    <id></id>
+    <name></name>
+    <department></department>
+    <city></city>
+    <salary></salary>
+    <performance></performance>
+    <gender></gender>
+    <experience></experience>
+    <status></status>
+    <email></email>
+</employee>
+
+<!-- RANDOM CASE -->
+<employee>
+    <id>EMP248</id>
+    <name>LuKAs MARTIN</name>
+    <department>AI Research</department>
+    <city>Mumbai</city>
+    <salary>132000</salary>
+    <performance>Excellent</performance>
+    <gender>Male</gender>
+    <experience>14</experience>
+    <status>Active</status>
+    <email>lukas@company.com</email>
+</employee>
+
+<employee>
+    <id>EMP249</id>
+    <name>Riya Kapoor</name>
+    <department>Finance</department>
+    <city>Pune</city>
+    <salary>72000</salary>
+    <performance>Good</performance>
+    <gender>Female</gender>
+    <experience>5</experience>
+    <status>Active</status>
+    <email>riya@company.com</email>
+</employee>
+
+<employee>
+    <id>EMP250</id>
+    <name>Thomas Shelby</name>
+    <department>IT</department>
+    <city>Hyderabad</city>
+    <salary>101000</salary>
+    <performance>Excellent</performance>
+    <gender>Male</gender>
+    <experience>11</experience>
+    <status>Active</status>
+    <email>thomas@company.com</email>
+</employee>
+
+</employees>
