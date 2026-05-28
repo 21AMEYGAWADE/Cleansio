@@ -9,118 +9,209 @@
           content="width=device-width, initial-scale=1.0">
 </head>
 
-<body class="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 flex items-center justify-center px-4">
+<body class="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 flex items-center justify-center px-4 py-10">
 
-<div class="w-full max-w-md">
+<div class="w-full max-w-6xl grid lg:grid-cols-2 gap-10 items-center">
 
-    <!-- CARD -->
-    <div class="bg-white/95 backdrop-blur-lg shadow-2xl rounded-3xl overflow-hidden">
+    <!-- LEFT SIDE -->
+    <div class="text-white hidden lg:block">
 
-        <!-- HEADER -->
-        <div class="bg-gradient-to-r from-blue-700 to-indigo-700 px-8 py-10 text-center">
+        <h1 class="text-6xl font-extrabold leading-tight">
+            Data Cleaner Pro
+        </h1>
 
-            <h1 class="text-4xl font-extrabold text-white tracking-wide">
-                Data Cleaner Pro
-            </h1>
+        <p class="mt-6 text-xl text-blue-100 leading-relaxed">
+            Smart web-based platform for cleaning, analyzing,
+            and visualizing datasets instantly.
+        </p>
 
-            <p class="text-blue-100 mt-3 text-sm">
-                Secure login to your dashboard
-            </p>
+        <!-- FEATURES -->
+        <div class="mt-10 space-y-5">
 
-        </div>
-
-        <!-- FORM SECTION -->
-        <div class="p-8">
-
-            <!-- ERROR MESSAGE -->
-            <div th:if="${param.error}"
-                 class="bg-red-100 border border-red-300 text-red-700 px-4 py-3 rounded-xl mb-5 text-sm">
-
-                Invalid Email or Password
-
-            </div>
-
-            <!-- LOGOUT MESSAGE -->
-            <div th:if="${param.logout}"
-                 class="bg-green-100 border border-green-300 text-green-700 px-4 py-3 rounded-xl mb-5 text-sm">
-
-                Logged out successfully
-
-            </div>
-
-            <!-- LOGIN FORM -->
-            <form action="/login"
-                  method="post"
-                  class="space-y-6">
-
-                <!-- EMAIL -->
-                <div>
-
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">
-                        Email Address
-                    </label>
-
-                    <input
-                            type="email"
-                            name="username"
-                            placeholder="Enter your email"
-                            required
-                            class="w-full px-4 py-3 border border-gray-300 rounded-xl bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition"
-                    >
-
+            <div class="flex items-start gap-4">
+                <div class="bg-blue-500/20 p-3 rounded-xl">
+                    📊
                 </div>
 
-                <!-- PASSWORD -->
                 <div>
+                    <h3 class="font-bold text-lg">
+                        Dataset Analytics
+                    </h3>
 
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">
-                        Password
-                    </label>
+                    <p class="text-blue-100 text-sm">
+                        Generate bar charts, pie charts,
+                        summaries and quality reports automatically.
+                    </p>
+                </div>
+            </div>
 
-                    <input
-                            type="password"
-                            name="password"
-                            placeholder="Enter your password"
-                            required
-                            class="w-full px-4 py-3 border border-gray-300 rounded-xl bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition"
-                    >
-
+            <div class="flex items-start gap-4">
+                <div class="bg-green-500/20 p-3 rounded-xl">
+                    🧹
                 </div>
 
-                <!-- LOGIN BUTTON -->
-                <button type="submit"
-                        class="w-full bg-gradient-to-r from-blue-700 to-indigo-700 hover:from-blue-800 hover:to-indigo-800 text-white py-3 rounded-xl font-semibold shadow-lg transition duration-300">
+                <div>
+                    <h3 class="font-bold text-lg">
+                        Smart Data Cleaning
+                    </h3>
 
-                    Login
+                    <p class="text-blue-100 text-sm">
+                        Remove duplicates, trim spaces,
+                        clean empty rows/columns and format text.
+                    </p>
+                </div>
+            </div>
 
-                </button>
+            <div class="flex items-start gap-4">
+                <div class="bg-purple-500/20 p-3 rounded-xl">
+                    📁
+                </div>
 
-            </form>
+                <div>
+                    <h3 class="font-bold text-lg">
+                        Multi-Format Support
+                    </h3>
 
-            <!-- REGISTER -->
-            <div class="mt-8 text-center">
+                    <p class="text-blue-100 text-sm">
+                        Upload and process Excel, CSV,
+                        JSON and XML files with ease.
+                    </p>
+                </div>
+            </div>
 
-                <p class="text-gray-600 text-sm">
-                    Don't have an account?
-                </p>
+            <div class="flex items-start gap-4">
+                <div class="bg-yellow-500/20 p-3 rounded-xl">
+                    🤖
+                </div>
 
-                <a th:href="@{/register}"
-                   class="inline-block mt-2 text-blue-700 font-semibold hover:text-indigo-700 hover:underline transition">
+                <div>
+                    <h3 class="font-bold text-lg">
+                        AI Assistant
+                    </h3>
 
-                    Create Account
-
-                </a>
-
+                    <p class="text-blue-100 text-sm">
+                        Ask intelligent questions about
+                        your uploaded dataset instantly.
+                    </p>
+                </div>
             </div>
 
         </div>
 
     </div>
 
-    <!-- FOOTER -->
-    <p class="text-center text-gray-300 text-sm mt-6">
-        © 2026 Data Cleaner Pro • Smart Dataset Cleaning Platform
-    </p>
+    <!-- RIGHT SIDE LOGIN -->
+    <div class="w-full max-w-md mx-auto">
+
+        <div class="bg-white/95 backdrop-blur-lg shadow-2xl rounded-3xl overflow-hidden">
+
+            <!-- HEADER -->
+            <div class="bg-gradient-to-r from-blue-700 to-indigo-700 px-8 py-10 text-center">
+
+                <h1 class="text-4xl font-extrabold text-white tracking-wide">
+                    Welcome Back
+                </h1>
+
+                <p class="text-blue-100 mt-3 text-sm">
+                    Login to continue using Data Cleaner Pro
+                </p>
+
+            </div>
+
+            <!-- FORM -->
+            <div class="p-8">
+
+                <!-- ERROR -->
+                <div th:if="${param.error}"
+                     class="bg-red-100 border border-red-300 text-red-700 px-4 py-3 rounded-xl mb-5 text-sm">
+
+                    Invalid Email or Password
+
+                </div>
+
+                <!-- LOGOUT -->
+                <div th:if="${param.logout}"
+                     class="bg-green-100 border border-green-300 text-green-700 px-4 py-3 rounded-xl mb-5 text-sm">
+
+                    Logged out successfully
+
+                </div>
+
+                <!-- LOGIN FORM -->
+                <form action="/login"
+                      method="post"
+                      class="space-y-6">
+
+                    <!-- EMAIL -->
+                    <div>
+
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                            Email Address
+                        </label>
+
+                        <input
+                                type="email"
+                                name="username"
+                                placeholder="Enter your email"
+                                required
+                                class="w-full px-4 py-3 border border-gray-300 rounded-xl bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition"
+                        >
+
+                    </div>
+
+                    <!-- PASSWORD -->
+                    <div>
+
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                            Password
+                        </label>
+
+                        <input
+                                type="password"
+                                name="password"
+                                placeholder="Enter your password"
+                                required
+                                class="w-full px-4 py-3 border border-gray-300 rounded-xl bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition"
+                        >
+
+                    </div>
+
+                    <!-- BUTTON -->
+                    <button type="submit"
+                            class="w-full bg-gradient-to-r from-blue-700 to-indigo-700 hover:from-blue-800 hover:to-indigo-800 text-white py-3 rounded-xl font-semibold shadow-lg transition duration-300">
+
+                        Login
+
+                    </button>
+
+                </form>
+
+                <!-- REGISTER -->
+                <div class="mt-8 text-center">
+
+                    <p class="text-gray-600 text-sm">
+                        Don't have an account?
+                    </p>
+
+                    <a th:href="@{/register}"
+                       class="inline-block mt-2 text-blue-700 font-semibold hover:text-indigo-700 hover:underline transition">
+
+                        Create Account
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- FOOTER -->
+        <p class="text-center text-gray-300 text-sm mt-6">
+            © 2026 Data Cleaner Pro • Smart Dataset Cleaning Platform
+        </p>
+
+    </div>
 
 </div>
 
