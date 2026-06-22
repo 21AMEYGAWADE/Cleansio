@@ -293,10 +293,9 @@ public class ExcelService {
                         data.add(cleanedRow);
                 }
                 }
+        // ================= REMOVE EMPTY COLUMNS =================
 
-                // ================= REMOVE EMPTY COLUMNS =================
-
-                if (removeEmptyColumnsEnabled && !data.isEmpty()) {
+        if (removeEmptyColumnsEnabled && !data.isEmpty()) {
 
                 List<Integer> validColumns =
                         new ArrayList<>();
@@ -310,17 +309,21 @@ public class ExcelService {
 
                         boolean hasData = false;
 
-                        for (List<String> row : data) {
+                        // Skip header row
+                        for (int rowIndex = 1;
+                        rowIndex < data.size();
+                        rowIndex++) {
+
+                        List<String> row =
+                                data.get(rowIndex);
 
                         if (col < row.size()) {
 
                                 String value =
                                         row.get(col);
 
-                                if (
-                                        value != null &&
-                                        !value.trim().isEmpty()
-                                ) {
+                                if (value != null &&
+                                !value.trim().isEmpty()) {
 
                                 hasData = true;
                                 break;
@@ -334,10 +337,29 @@ public class ExcelService {
                         }
                 }
 
-                List<List<String>> updatedData =
+                List<List<String>> filteredData =
                         new ArrayList<>();
 
-                for (List<String> row : data) {
+                // Add filtered header
+                List<String> header =
+                        new ArrayList<>();
+
+                for (Integer col : validColumns) {
+
+                        header.add(
+                                data.get(0).get(col)
+                        );
+                }
+
+                filteredData.add(header);
+
+                // Add filtered rows
+                for (int rowIndex = 1;
+                        rowIndex < data.size();
+                        rowIndex++) {
+
+                        List<String> row =
+                                data.get(rowIndex);
 
                         List<String> newRow =
                                 new ArrayList<>();
@@ -354,11 +376,12 @@ public class ExcelService {
                         }
                         }
 
-                        updatedData.add(newRow);
+                        filteredData.add(newRow);
                 }
 
-                data = updatedData;
+                data = filteredData;
                 }
+
 
                 // ================= CLEAN ROWS =================
 
